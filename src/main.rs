@@ -92,8 +92,22 @@ fn main()
     let circle_size = args.next().map(|circle_size| circle_size.parse().ok())
         .flatten().unwrap_or(0.1);
 
+    let portrait = false;
+    let filtered_open = |path|
+    {
+        let image = open_image(path);
+
+        if portrait
+        {
+            image.rotate270()
+        } else
+        {
+            image
+        }
+    };
+
     let (first_image, second_image) =
-        (open_image(first_image_path), open_image(second_image_path));
+        (filtered_open(first_image_path), filtered_open(second_image_path));
 
     let output_image = bubly_mix(first_image, second_image, circle_size);
 
