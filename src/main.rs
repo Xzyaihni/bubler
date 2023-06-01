@@ -26,6 +26,24 @@ fn open_image<P: AsRef<Path>>(path: P) -> DynamicImage
     })
 }
 
+#[allow(dead_code)]
+fn weird_star(x: f32, y: f32, size: f32) -> bool
+{
+    let value = y.abs().powi(2).cbrt() + x.abs().powi(2).cbrt();
+
+    value < (size.sqrt() * 1.8)
+}
+
+fn circle(x: f32, y: f32, size: f32) -> bool
+{
+    y.hypot(x) < (size / 2.0)
+}
+
+fn shape_test(x: f32, y: f32, size: f32) -> bool
+{
+    circle(x, y, size)
+}
+
 fn bubly_mix(
     main_image: DynamicImage,
     second_image: DynamicImage,
@@ -67,7 +85,7 @@ fn bubly_mix(
             let circle_x = in_circle(x);
             let circle_y = in_circle(y);
 
-            let secondary = circle_x.hypot(circle_y) < (this_circle_size / 2.0);
+            let secondary = shape_test(circle_x, circle_y, this_circle_size);
 
             if secondary
             {
@@ -92,7 +110,7 @@ fn main()
     let circle_size = args.next().map(|circle_size| circle_size.parse().ok())
         .flatten().unwrap_or(0.1);
 
-    let portrait = false;
+    let portrait = true;
     let filtered_open = |path|
     {
         let image = open_image(path);
